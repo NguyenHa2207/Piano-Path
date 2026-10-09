@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PianoPath</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header><a class="logo" href="#">PianoPath</a>
+        <nav>
+            <button class="nav-button active" data-page="Repertoire">Repertoire</button>
+            <button class="nav-button" data-page="Technique">Technique</button>
+            <button class="nav-button" data-page="Theory">Theory</button>
+            <button class="nav-button" data-page="Practice">Practice</button>
+            <button class="nav-button" data-page="Progress">Progress</button>
+        </nav>
+    </header>
+    <main id="app">
+        <section class="empty-state">
+            <h1>PianoPath</h1>
+            <p>Open your PianoCourse folder to begin.</p><button id="open-folder-button" class="primary">Open
+                PianoCourse Folder</button>
+            <p class="muted">Use Chrome or Edge.</p>
+        </section>
+    </main>
+    <dialog id="lesson-form">
+        <form id="lesson-form-fields">
+            <h2>Add a lesson</h2>
+            <label>Category<select id="lesson-category">
+                    <option value="Repertoire">Repertoire</option>
+                    <option value="Technique/Major Scales">Technique / Major Scales</option>
+                    <option value="Technique/Minor Scales">Technique / Minor Scales</option>
+                    <option value="Theory">Theory</option>
+                </select></label>
+            <label>Difficulty<select id="lesson-difficulty">
+                    <option>Beginner</option>
+                    <option>Intermediate</option>
+                    <option>Advanced</option>
+                </select></label>
+            <label>Level<input id="lesson-level" value="Level 1" required></label>
+            <label>Lesson name<input id="lesson-name" placeholder="Ode to Joy" required></label>
+            <label>Video (.mp4)<input id="lesson-video" type="file" accept="video/mp4" required></label>
+            <label>Sheet (.pdf)<input id="lesson-sheet" type="file" accept="application/pdf,.pdf" required></label>
+            <div class="actions"><button type="button" id="cancel-lesson-button"
+                    class="secondary">Cancel</button><button type="submit" class="primary">Create lesson</button></div>
+        </form>
+    </dialog>
+    <dialog id="player-dialog" class="player">
+        <div class="player-header">
+            <h2 id="player-title">Lesson</h2><button id="close-player-button" class="secondary">Close</button>
+        </div>
+        <div class="player-layout">
+            <section class="video-panel"><video id="lesson-video-player" controls></video>
+                <div class="loop-controls">
+                    <button id="set-a-button">Set A</button><button id="set-b-button">Set B</button><button
+                        id="clear-ab-button">Clear A/B</button><button id="toggle-loop-button">A/B Loop: Off</button>
+                </div>
+            </section>
+            <iframe id="lesson-sheet-viewer" title="Sheet music PDF"></iframe>
+        </div>
+    </dialog>
+    <script src="script.js"></script>
+</body>
+
+</html>
