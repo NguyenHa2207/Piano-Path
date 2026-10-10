@@ -6,11 +6,12 @@ let loopStart = null, loopEnd = null, loopEnabled = false;
 
 const PRACTICE_KEY = "pianopath-practice-v4";
 const DONE_KEY = "pianopath-done-v4";
+const THEME_KEY = "pianopath-theme";
 
 function readList(key) { return JSON.parse(localStorage.getItem(key) || "[]"); }
 function saveList(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
 function escapeHTML(text) {
-  return String(text).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  return String(text).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 function findLesson(path) { return lessons.find(lesson => lesson.path === path); }
 function isDone(lesson) { return readList(DONE_KEY).includes(lesson.path); }
@@ -18,7 +19,7 @@ function inPractice(lesson) { return readList(PRACTICE_KEY).includes(lesson.path
 
 async function openCourseFolder() {
   try {
-    courseFolder = await window.showDirectoryPicker({ mode: "readwrite" });
+    courseFolder = await window.showDirectoryPicker({mode:"readwrite"});
     await scanLessons();
     renderPage();
   } catch (error) {
@@ -30,7 +31,7 @@ async function childFolder(parent, name) {
 }
 async function scanLessons() {
   lessons = [];
-  const categories = ["Repertoire", "Technique/Major Scales", "Technique/Minor Scales", "Theory"];
+  const categories = ["Repertoire","Technique/Major Scales","Technique/Minor Scales","Theory"];
   for (const category of categories) {
     let folder = courseFolder;
     for (const name of category.split("/")) {
@@ -52,8 +53,8 @@ async function scanInside(folder, category, parentNames) {
       // Expected order: Difficulty / Level / Lesson name
       if (names.length >= 3) {
         lessons.push({
-          name, category, difficulty: names[0], level: names[1],
-          path: category + "/" + names.join("/"), folder: entry
+          name, category, difficulty:names[0], level:names[1],
+          path:category + "/" + names.join("/"), folder:entry
         });
       }
     } else {
@@ -107,8 +108,8 @@ function renderPage() {
     if (!groups[key]) groups[key] = [];
     groups[key].push(lesson);
   });
-  Object.keys(groups).sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).forEach(key => {
-    const [category, difficulty, level] = key.split("|");
+  Object.keys(groups).sort((a,b) => a.localeCompare(b,undefined,{numeric:true})).forEach(key => {
+    const [category,difficulty,level] = key.split("|");
     html += `<section class="category-section"><h2>${escapeHTML(category.split("/").pop())} · ${escapeHTML(difficulty)}</h2>
       <div class="level-section"><h3>${escapeHTML(level)}</h3><div class="lesson-grid">`;
     groups[key].forEach(lesson => html += lessonCard(lesson));
@@ -124,7 +125,7 @@ function renderPractice(app) {
   const items = readList(PRACTICE_KEY).map(findLesson).filter(Boolean);
   app.innerHTML = `<div class="heading"><div><h1>Practice</h1><div class="muted">${items.length} lessons selected</div></div></div>` +
     (items.length ? `<div class="lesson-grid">${items.map(lessonCard).join("")}</div>` :
-      '<section class="empty-state"><h2>Your practice list is empty</h2><p>Use “☆ Add to Practice” on a lesson card.</p></section>');
+    '<section class="empty-state"><h2>Your practice list is empty</h2><p>Use “☆ Add to Practice” on a lesson card.</p></section>');
   attachCardEvents();
 }
 function renderProgress(app) {
@@ -159,12 +160,12 @@ async function createLesson(event) {
 
   try {
     let folder = courseFolder;
-    for (const part of category.split("/")) folder = await folder.getDirectoryHandle(part, { create: true });
-    folder = await folder.getDirectoryHandle(difficulty, { create: true });
-    folder = await folder.getDirectoryHandle(level, { create: true });
-    folder = await folder.getDirectoryHandle(name, { create: true });
-    await copyFile(video, folder, "video.mp4");
-    await copyFile(sheet, folder, "sheet.pdf");
+    for (const part of category.split("/")) folder = await folder.getDirectoryHandle(part,{create:true});
+    folder = await folder.getDirectoryHandle(difficulty,{create:true});
+    folder = await folder.getDirectoryHandle(level,{create:true});
+    folder = await folder.getDirectoryHandle(name,{create:true});
+    await copyFile(video,folder,"video.mp4");
+    await copyFile(sheet,folder,"sheet.pdf");
     document.getElementById("lesson-form").close();
     document.getElementById("lesson-form-fields").reset();
     // Rescan after saving: this fixes the issue where a new lesson didn't appear.
@@ -176,7 +177,7 @@ async function createLesson(event) {
   }
 }
 async function copyFile(source, folder, newName) {
-  const fileHandle = await folder.getFileHandle(newName, { create: true });
+  const fileHandle = await folder.getFileHandle(newName,{create:true});
   const writable = await fileHandle.createWritable();
   await writable.write(source);
   await writable.close();
@@ -207,7 +208,7 @@ function toggleLoop() {
   loopEnabled = !loopEnabled;
   const button = document.getElementById("toggle-loop-button");
   button.textContent = "A/B Loop: " + (loopEnabled ? "On" : "Off");
-  button.classList.toggle("active", loopEnabled);
+  button.classList.toggle("active",loopEnabled);
 }
 function checkLoop() {
   const video = document.getElementById("lesson-video-player");
@@ -217,22 +218,39 @@ function checkLoop() {
   }
 }
 
+// Dark mode: remember the user's choice in this browser.
+function applyTheme(theme) {
+  document.body.dataset.theme = theme;
+  const button = document.getElementById("theme-toggle");
+  if (!button) return;
+  const darkMode = theme === "dark";
+  button.textContent = darkMode ? "☀️" : "🌙";
+  button.setAttribute("aria-label", darkMode ? "Switch to light mode" : "Switch to dark mode");
+}
+function toggleTheme() {
+  const nextTheme = document.body.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem(THEME_KEY, nextTheme);
+  applyTheme(nextTheme);
+}
+
 // Connect UI events to functions.
-document.getElementById("open-folder-button").addEventListener("click", openCourseFolder);
-document.getElementById("cancel-lesson-button").addEventListener("click", () => document.getElementById("lesson-form").close());
-document.getElementById("lesson-form-fields").addEventListener("submit", createLesson);
-document.getElementById("close-player-button").addEventListener("click", closeLesson);
-document.getElementById("set-a-button").addEventListener("click", setA);
-document.getElementById("set-b-button").addEventListener("click", setB);
-document.getElementById("clear-ab-button").addEventListener("click", clearAB);
-document.getElementById("toggle-loop-button").addEventListener("click", toggleLoop);
-document.getElementById("lesson-video-player").addEventListener("timeupdate", checkLoop);
-document.querySelectorAll(".nav-button").forEach(button => button.addEventListener("click", () => {
+applyTheme(localStorage.getItem(THEME_KEY) || "light");
+document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
+document.getElementById("open-folder-button").addEventListener("click",openCourseFolder);
+document.getElementById("cancel-lesson-button").addEventListener("click",() => document.getElementById("lesson-form").close());
+document.getElementById("lesson-form-fields").addEventListener("submit",createLesson);
+document.getElementById("close-player-button").addEventListener("click",closeLesson);
+document.getElementById("set-a-button").addEventListener("click",setA);
+document.getElementById("set-b-button").addEventListener("click",setB);
+document.getElementById("clear-ab-button").addEventListener("click",clearAB);
+document.getElementById("toggle-loop-button").addEventListener("click",toggleLoop);
+document.getElementById("lesson-video-player").addEventListener("timeupdate",checkLoop);
+document.querySelectorAll(".nav-button").forEach(button => button.addEventListener("click",() => {
   currentPage = button.dataset.page;
-  document.querySelectorAll(".nav-button").forEach(nav => nav.classList.toggle("active", nav === button));
+  document.querySelectorAll(".nav-button").forEach(nav => nav.classList.toggle("active",nav === button));
   renderPage();
 }));
-document.addEventListener("keydown", event => {
+document.addEventListener("keydown",event => {
   if (!document.getElementById("player-dialog").open) return;
   if (event.key === "Escape") closeLesson();
   if (event.key.toLowerCase() === "a") setA();
