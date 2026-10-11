@@ -1,5 +1,67 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PianoPath</title><link rel="stylesheet" href="style.css"></head><body>
-<header><a class="logo" href="#">PianoPath</a><nav><button class="nav-button active" data-page="Repertoire">Repertoire</button><button class="nav-button" data-page="Technique">Technique</button><button class="nav-button" data-page="Theory">Theory</button><button class="nav-button" data-page="Practice">Practice</button><button class="nav-button" data-page="Progress">Progress</button></nav><button id="theme-toggle" class="theme-toggle">🌙 Dark mode</button></header><main id="app"><section class="empty-state">Loading lessons...</section></main>
-<dialog id="lesson-form"><form id="lesson-fields"><h2>Add a lesson</h2><label>Category<select name="category"><option value="Repertoire">Repertoire</option><option value="Technique/Major Scales">Technique / Major Scales</option><option value="Technique/Minor Scales">Technique / Minor Scales</option><option value="Theory">Theory</option></select></label><label>Difficulty<select name="difficulty"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></label><label>Level<input name="level" value="Level 1" required></label><label>Lesson name<input name="title" placeholder="Ode to Joy" required></label><label>Video (.mp4)<input name="video" type="file" accept=".mp4" required></label><label>Sheet (.pdf)<input name="sheet" type="file" accept=".pdf" required></label><p id="form-message" class="muted"></p><div class="actions"><button type="button" id="cancel-lesson" class="secondary">Cancel</button><button class="primary">Create lesson</button></div></form></dialog>
-<dialog id="player" class="player"><div class="player-head"><h2 id="player-title">Lesson</h2><button id="close-player" class="secondary">Close</button></div><div class="player-layout"><section class="video-panel"><video id="video" controls></video><div class="loop-controls"><button id="set-a">Set A</button><button id="set-b">Set B</button><button id="clear-ab">Clear A/B</button><button id="loop">A/B Loop: Off</button></div></section><iframe id="sheet" title="Sheet music PDF"></iframe></div></dialog>
-<dialog id="practice-form"><form id="practice-fields"><h2>Log a practice session</h2><p id="practice-title"></p><input id="practice-id" type="hidden"><label>Duration (minutes)<input id="duration" type="number" min="0" max="1440" value="15" required></label><label>Notes<textarea id="notes" rows="3"></textarea></label><div class="actions"><button type="button" id="cancel-practice" class="secondary">Cancel</button><button class="primary">Save session</button></div></form></dialog><script src="script.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>PianoPath</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="piano.png">
+</head>
+
+<body>
+    <header><a class="logo" href="#">PianoPath</a>
+        <nav><button class="nav-button active" data-page="Repertoire">Repertoire</button><button class="nav-button"
+                data-page="Technique">Technique</button><button class="nav-button"
+                data-page="Theory">Theory</button><button class="nav-button"
+                data-page="Practice">Practice</button><button class="nav-button" data-page="Progress">Progress</button>
+        </nav><button id="theme-toggle" class="theme-toggle">🌙 Dark mode</button>
+    </header>
+    <main id="app">
+        <section class="empty-state">Loading lessons...</section>
+    </main>
+    <dialog id="lesson-form">
+        <form id="lesson-fields">
+            <h2>Add a lesson</h2><label>Category<select name="category">
+                    <option value="Repertoire">Repertoire</option>
+                    <option value="Technique/Major Scales">Technique / Major Scales</option>
+                    <option value="Technique/Minor Scales">Technique / Minor Scales</option>
+                    <option value="Theory">Theory</option>
+                </select></label><label>Difficulty<select name="difficulty">
+                    <option>Beginner</option>
+                    <option>Intermediate</option>
+                    <option>Advanced</option>
+                </select></label><label>Level<input name="level" value="Level 1" required></label><label>Lesson
+                name<input name="title" placeholder="Ode to Joy" required></label><label>Video (.mp4)<input name="video"
+                    type="file" accept=".mp4" required></label><label>Sheet (.pdf)<input name="sheet" type="file"
+                    accept=".pdf" required></label>
+            <p id="form-message" class="muted"></p>
+            <div class="actions"><button type="button" id="cancel-lesson" class="secondary">Cancel</button><button
+                    class="primary">Create lesson</button></div>
+        </form>
+    </dialog>
+    <dialog id="player" class="player">
+        <div class="player-head">
+            <h2 id="player-title">Lesson</h2><button id="close-player" class="secondary">Close</button>
+        </div>
+        <div class="player-layout">
+            <section class="video-panel"><video id="video" controls></video>
+                <div class="loop-controls"><button id="set-a">Set A</button><button id="set-b">Set B</button><button
+                        id="clear-ab">Clear A/B</button><button id="loop">A/B Loop: Off</button></div>
+            </section><iframe id="sheet" title="Sheet music PDF"></iframe>
+        </div>
+    </dialog>
+    <dialog id="practice-form">
+        <form id="practice-fields">
+            <h2>Log a practice session</h2>
+            <p id="practice-title"></p><input id="practice-id" type="hidden"><label>Duration (minutes)<input
+                    id="duration" type="number" min="0" max="1440" value="15" required></label><label>Notes<textarea
+                    id="notes" rows="3"></textarea></label>
+            <div class="actions"><button type="button" id="cancel-practice" class="secondary">Cancel</button><button
+                    class="primary">Save session</button></div>
+        </form>
+    </dialog>
+    <script src="script.js"></script>
+</body>
+
+</html>
