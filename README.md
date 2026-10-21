@@ -4,6 +4,10 @@ A personal piano practice app that runs fully offline on your local machine.
 
 Watch lesson videos side-by-side with sheet music PDFs, organize pieces by category / difficulty / level, track practice sessions, and monitor your progress.
 
+## Demo Video
+
+https://github.com/user-attachments/assets/51bbf101-fb43-4222-9f83-bbc876c26b63
+
 ## Features
 
 - Add lessons with video (MP4) and optional sheet music (PDF)
@@ -92,17 +96,5 @@ PianoPath/
 - To back up: simply copy these two folders
 - Do **not** commit `node_modules/`, `data/`, or `PianoCourse/` to GitHub
 - This app is intended for personal local use only — do not expose the server to the internet
-
-## Recommended .gitignore
-
-```gitignore
-node_modules/
-data/
-PianoCourse/
-*.db
-.DS_Store
-```
-
-## License
 
 MIT – Free for personal use.
